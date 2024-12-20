@@ -1,0 +1,4 @@
+{
+    "destinationEmail": "cypress_testing@mailfence.com",
+    "mailSubject": "File transfer mail-001"
+}
