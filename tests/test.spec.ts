@@ -1,6 +1,8 @@
 import { test } from '../test-options'
 import { createRandomTextFile } from './helpers'
+import { folderNames } from '../constants/enums'
 import data from '../data/mailTest.json'
+
 
 test('mail-001 @smoke', async ({pageManager}) => {
 
@@ -16,14 +18,15 @@ test('mail-001 @smoke', async ({pageManager}) => {
     await pageManager.onMailPage().attachFile(`${dirPath}/${fileName}`)
     await pageManager.onMailPage().sendEmail()
 
-    await pageManager.onMainMailPage().waitForMailCountToIncrease(unreadCount, 300, 50)
+    await pageManager.onMainMailPage().waitForMailCountToIncrease(unreadCount)
     await pageManager.onMainMailPage().selectUnreadEmailBySubject(data.mailSubject)
     
     await pageManager.onViewMailPage().saveAttachmentByNameInMyDocuments(fileName)
 
     await pageManager.onHeaderPage().goToDocs()
 
-    await pageManager.onDocsPage().dragAndDropDocumentToFolderByName(fileName, 'Trash')
-    await pageManager.onDocsPage().openFolderByName('Trash')
+    const trashFolderName = folderNames.trash
+    await pageManager.onDocsPage().dragAndDropDocumentToFolderByName(fileName, trashFolderName)
+    await pageManager.onDocsPage().openFolderByName(trashFolderName)
     await pageManager.onDocsPage().documentByNameExists(fileName)
 })

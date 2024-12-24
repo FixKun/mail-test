@@ -1,5 +1,6 @@
 import { expect, Locator, Page } from "@playwright/test"
 import { BaseListPage } from "../common/baseListPage"
+import { headerButtonNames as buttons } from '../../constants/enums' 
 
 export class MainMailPage extends BaseListPage {
     protected readonly navPanel = this.page.locator('.treePanel', {'hasText': '@mailfence.com'})
@@ -12,7 +13,7 @@ export class MainMailPage extends BaseListPage {
         super(page)
         this.createNewEmailButton = this.page.locator('#mailNewBtn')
         this.inboxMenu = this.page.locator('#treeInbox')
-        this.refreshButton = this.page.getByText('Refresh')
+        this.refreshButton = this.page.getByText(buttons.refresh)
     }
 
 

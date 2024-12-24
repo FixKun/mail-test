@@ -1,4 +1,5 @@
 import { Page, Locator } from "@playwright/test"
+import { headerButtonNames as buttons } from '../../constants/enums' 
 
 export abstract class BaseListPage{
     protected readonly page: Page
@@ -18,7 +19,7 @@ export abstract class BaseListPage{
     abstract selectAllItems():Promise<boolean>
 
     async refreshList(){
-        await this.toolbarItemByName('Refresh').click()
+        await this.toolbarItemByName(buttons.refresh).click()
     }
 
     async acceptDialog(){
@@ -33,7 +34,7 @@ export abstract class BaseListPage{
         const responsePromise  = this.page.waitForResponse(
             resp => resp.url().includes('/gwt')
         )
-        await this.toolbarItemByName('Delete').click()
+        await this.toolbarItemByName(buttons.delete).click()
         if (needsConfirmation){
             await this.acceptDialog()
         }
