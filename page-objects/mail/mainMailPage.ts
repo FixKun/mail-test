@@ -38,18 +38,13 @@ export class MainMailPage extends BaseListPage {
     /**
      * Function refreshes email list until number of unread emails will be greater than provided value or until times out
      * @param oldValue Value of unread emails before the check
-     * @param iterationWaitTime Wait time after each check in ms
-     * @param retries Number of retries
      */
-    async waitForMailCountToIncrease(oldValue: number, iterationWaitTime: number, retries: number){
-        for (let i = 0; i < retries; i++) {
+    async waitForMailCountToIncrease(oldValue: number){
+        await expect(async () => {
             await this.refreshMailList()
             let mailCount = await this.getUnreadCount()
-            if (oldValue < mailCount){
-                break
-            }
-            await this.page.waitForTimeout(iterationWaitTime)
-          }
+            expect(mailCount).toBeGreaterThan(oldValue)
+        }).toPass()
     }
 
     /**
