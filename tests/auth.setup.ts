@@ -11,10 +11,12 @@ setup('authentication', async({page, request}) => {
     if (!username || !password){
         throw new Error('No user credentials found. Please, set LOGIN and PASSWORD env vars')
     }
-    await loginPage.loginWithCredentials(username, password)
-    // wait until logged in
-    await page.waitForResponse('https://mailfence.com/gwt')
-    // and store state
-    await page.context().storageState({path: authFile})
+    await setup.step(`Login as ${username}`, async () => {
+        await loginPage.loginWithCredentials(username, password)
+        // wait until logged in
+        await page.waitForResponse('https://mailfence.com/gwt')
+        // and store state
+        await page.context().storageState({path: authFile})
+    })
 
 })
