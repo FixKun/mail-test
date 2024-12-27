@@ -1,4 +1,5 @@
 import { faker as fake } from '@faker-js/faker'
+import { test } from "@playwright/test"
 import fs from 'fs'
 
 /**
@@ -6,16 +7,18 @@ import fs from 'fs'
  * @param directoryPath A path to save a file. Will save into a current folder by default. Should be without a trailing slash
  * @returns A file name with .txt extension
  */
-export function createRandomTextFile(directoryPath: string): string {
-    const fileName = fake.system.commonFileName('txt')
-    const fileContent = fake.lorem.words(30)
+export async function createRandomTextFile(directoryPath: string): Promise<string> {
+    return await test.step(`Create random file`, async () => {
+        const fileName = fake.system.commonFileName('txt')
+        const fileContent = fake.lorem.words(30)
 
-    if(!directoryPath){
-        directoryPath = '.'
-    }
-    const fullPath = `${directoryPath}/${fileName}`
+        if(!directoryPath){
+            directoryPath = '.'
+        }
+        const fullPath = `${directoryPath}/${fileName}`
 
-    fs.writeFileSync(fullPath, fileContent)
+        fs.writeFileSync(fullPath, fileContent)
 
-    return fileName
+        return fileName
+    })
 }

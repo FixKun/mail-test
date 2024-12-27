@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test"
+import { Locator, Page, test } from "@playwright/test"
 
 export class HeaderPage {
     private readonly page: Page
@@ -12,10 +12,14 @@ export class HeaderPage {
     }
 
     async goToMail(){
-        await this.emailButton.click()
+        await test.step(`Navigate to Mail page`, async () => {
+            await this.emailButton.click()
+        })
     }
 
     async goToDocs(){
-        await this.documentsButton.click()
+        await test.step(`Navigate to Documents page`, async () => {
+            await this.documentsButton.click()
+        })
     }
 }

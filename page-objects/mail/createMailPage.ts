@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test"
+import { Locator, Page, test } from "@playwright/test"
 
 export class CreateMailPage {
     readonly page: Page
@@ -37,5 +37,17 @@ export class CreateMailPage {
 
     async sendEmail(){
         await this.sendEmailButton.click()
+    }
+
+    // STEPS
+    async sendEmailToRecipient(recipient: string, subject: string, filePath: string = ''){
+        await test.step(`Create and send email with subject: ${subject} to ${recipient}`, async () => {
+            await this.setMailRecipient(recipient)
+            await this.setMailSubject(subject)
+            if (filePath != ''){
+                await this.attachFile(filePath)
+            }
+            await this.sendEmail()
+        })
     }
 }

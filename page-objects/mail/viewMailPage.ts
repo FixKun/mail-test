@@ -1,4 +1,4 @@
-import { expect, Locator, Page } from "@playwright/test"
+import { expect, Locator, Page, test } from "@playwright/test"
 
 export class ViewMailPage {
     private readonly page: Page
@@ -34,11 +34,15 @@ export class ViewMailPage {
         await this.documentPopup.locator('#dialBtn_OK:not(.GCSDBRWBMB)').click()
     }
 
+
+    // STEPS
     async saveAttachmentByNameInMyDocuments(attachmentName: string){
-        await this.openAttachmentContextMenu(attachmentName)
-        await this.clickSaveInDocumentsListItemInAttachmentPopup()
-        await this.selectRootNodeInDocsList()
-        await this.clickSaveInDocsPopup()
+        await test.step(`Save attachment by name "${attachmentName}" in My Documents`, async () => {
+            await this.openAttachmentContextMenu(attachmentName)
+            await this.clickSaveInDocumentsListItemInAttachmentPopup()
+            await this.selectRootNodeInDocsList()
+            await this.clickSaveInDocsPopup()
+        })
     }
 
 }
