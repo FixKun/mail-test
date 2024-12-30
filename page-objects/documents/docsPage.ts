@@ -29,6 +29,7 @@ export class DocsPage extends BaseListPage {
       await test.step(`Drag'n'drop ${docName} document to ${folderName} folder`, async () => {
           const document = this.documentsByName(docName)
           const targetFolder = this.navPanel.getNavItemByName(folderName)
+          await this.page.waitForTimeout(20)
           await targetFolder.waitFor({ state: 'visible' })
           const box = await targetFolder.boundingBox()
           if (!box) {
@@ -40,7 +41,7 @@ export class DocsPage extends BaseListPage {
             steps: 5,
           })
           await this.page.mouse.up()
-          await this.page.waitForTimeout(10)
+          
       })
     }
 
