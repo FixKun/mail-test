@@ -1,12 +1,12 @@
 import { expect, Locator, Page, test } from "@playwright/test"
+import { BasePage } from "../common/basePage"
 
-export class ViewMailPage {
-    private readonly page: Page
+export class ViewMailPage extends BasePage{
     private readonly attachmentByFilename: (name: string) => Locator
     private readonly documentPopup: Locator
 
     constructor(page: Page){
-        this.page = page
+        super(page)
         this.attachmentByFilename = (text: string) => this.page.locator(`a[title*="${text}"]`)
         this.documentPopup = this.page.locator('div[hidefocus="true"]', {'hasText': 'Document'})
     }

@@ -1,11 +1,13 @@
 import { expect, Locator, Page, test } from "@playwright/test"
 import { BaseListPage } from "../common/baseListPage"
+import { NavPanelPage } from "../common/navPanel"
 
 export class DocsPage extends BaseListPage {
-    protected readonly navPanel = this.page.locator('.treePanel', {'hasText': 'My Documents'})
+    readonly navPanel: NavPanelPage 
 
     constructor(page: Page){
         super(page)
+        this.navPanel = new NavPanelPage(this.page, this.page.locator('.treePanel', {'hasText': 'My Documents'}))
     }
 
     async documentByNameExists(name:string){
@@ -16,7 +18,7 @@ export class DocsPage extends BaseListPage {
         return this.selectAllItemsGeneric('getDocuments', '.docType')
       }
 
-      // STEPS
+    // STEPS
     
      /**
      * Drag'n'drops document (docName) to a folder (folderName) in nav panel
@@ -26,7 +28,7 @@ export class DocsPage extends BaseListPage {
     async dragAndDropDocumentToFolderByName(docName: string, folderName: string){
       await test.step(`Drag'n'drop ${docName} document to ${folderName} folder`, async () => {
           const document = this.documentsByName(docName)
-          const targetFolder = this.navItemByName(folderName)
+          const targetFolder = this.navPanel.getNavItemByName(folderName)
           await targetFolder.waitFor({ state: 'visible' })
           const box = await targetFolder.boundingBox()
           if (!box) {
@@ -43,7 +45,7 @@ export class DocsPage extends BaseListPage {
 
     async checkThatFileIsInTheFolder(fileName: string, folderName: string){
       await test.step(`Validate that ${fileName} document is in ${folderName} folder`, async () => {
-          await this.openFolderByName(folderName)
+          await this.navPanel.openFolderByName(folderName)
           await this.documentByNameExists(fileName)
       })
     }

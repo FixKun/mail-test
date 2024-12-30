@@ -1,14 +1,14 @@
 import { Locator, Page, test } from "@playwright/test"
+import { BasePage } from "../common/basePage"
 
-export class CreateMailPage {
-    readonly page: Page
+export class CreateMailPage extends BasePage{
     readonly mailToField: Locator
     readonly mailSubjectField: Locator
     readonly attachmentMenu: Locator
     readonly sendEmailButton: Locator
 
     constructor(page: Page){
-        this.page = page
+        super(page)
         this.mailToField = this.page.getByRole('row', {name: 'To', exact: true}).getByRole('textbox')
         this.mailSubjectField = this.page.getByRole('row', {name: 'Subject', exact: true}).getByRole('textbox')
         this.attachmentMenu = this.page.getByText('Attachment')

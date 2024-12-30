@@ -1,49 +1,30 @@
 import { Page, Locator } from "@playwright/test"
 import { headerButtonNames as buttons } from '../../constants/enums' 
+import { NavPanelPage } from "./navPanel"
+import { BasePage } from "./basePage"
 
-export abstract class BaseListPage{
-    protected readonly page: Page
-    protected readonly abstract navPanel: Locator
+export abstract class BaseListPage extends BasePage{
+    readonly abstract navPanel: NavPanelPage
     protected readonly selectAllCheckbox: Locator
-    protected readonly confirmationDialog: Locator
     protected readonly documentsByName: (name: string) => Locator = (text: string) => this.page.locator('tbody tr', {'hasText': text})
-    protected readonly navItemByName: (name: string) => Locator = (text: string) => this.navPanel.locator('div[role="treeitem"]', {'hasText': text})
-    protected readonly toolbarItemByName: (name: string) => Locator = (text: string) => this.page.locator('.toolbar').getByText(text)
 
     constructor(page: Page){
-        this.page = page
+        super(page)
         this.selectAllCheckbox = this.page.locator('div[title="Select all"]')
-        this.confirmationDialog = this.page.locator('#msgBox')
     }
 
     abstract selectAllItems():Promise<boolean>
-
-    async refreshList(){
-        await this.toolbarItemByName(buttons.refresh).click()
-    }
-
-    async acceptDialog(){
-        await this.confirmationDialog.locator('#dialBtn_YES').click()
-    }
-
-    async declineDialog(){
-        await this.confirmationDialog.locator('#dialBtn_NO').click()
-    }
 
     async deleteSelected(needsConfirmation: boolean){
         const responsePromise  = this.page.waitForResponse(
             resp => resp.url().includes('/gwt')
         )
-        await this.toolbarItemByName(buttons.delete).click()
+        await this.toolbar.clickToolbarItemByName(buttons.delete)
         if (needsConfirmation){
             await this.acceptDialog()
         }
         await responsePromise 
 
-    }
-
-    async openRootFolder(){
-        await this.navPanel.locator('div.treeItemRoot').click()
     }
 
     async clearCurrentFolder(needsConfirmation: boolean){
@@ -52,10 +33,6 @@ export abstract class BaseListPage{
             await this.deleteSelected(needsConfirmation)
         }
         
-    }
-
-    async openFolderByName(name:string){
-        await this.navItemByName(name).click()
     }
 
     /**
@@ -80,7 +57,7 @@ export abstract class BaseListPage{
             )
           }
         )
-        await this.refreshList()
+        await this.toolbar.refresh()
         await responsePromise 
 
         const checkboxClasses = await this.selectAllCheckbox.getAttribute('class')

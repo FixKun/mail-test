@@ -1,23 +1,19 @@
 import { expect, Locator, Page, test } from "@playwright/test"
 import { BaseListPage } from "../common/baseListPage"
 import { headerButtonNames as buttons } from '../../constants/enums' 
+import { NavPanelPage } from "../common/navPanel"
 
 export class MainMailPage extends BaseListPage {
-    protected readonly navPanel = this.page.locator('.treePanel', {'hasText': '@mailfence.com'})
-
+    readonly navPanel: NavPanelPage
     readonly createNewEmailButton: Locator
     readonly inboxMenu: Locator
-    readonly refreshButton: Locator
 
     constructor(page: Page){
         super(page)
         this.createNewEmailButton = this.page.locator('#mailNewBtn')
         this.inboxMenu = this.page.locator('#treeInbox')
-        this.refreshButton = this.page.getByText(buttons.refresh)
-    }
+        this.navPanel = new NavPanelPage(this.page, this.page.locator('.treePanel', {'hasText': '@mailfence.com'}))
 
-    async refreshMailList(){
-        await this.refreshButton.click()
     }
 
     async selectAllItems(): Promise<boolean> {
@@ -51,7 +47,7 @@ export class MainMailPage extends BaseListPage {
         async waitForMailCountToIncrease(oldValue: number){
             await test.step(`Wait for unread counter to increase`, async () => {
                 await expect(async () => {
-                    await this.refreshMailList()
+                    await this.toolbar.refresh()
                     let mailCount = await this.getUnreadCount()
                     expect(mailCount).toBeGreaterThan(oldValue)
                 }).toPass()
