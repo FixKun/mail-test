@@ -40,7 +40,7 @@ export class CreateMailPage extends BasePage{
     }
 
     // STEPS
-    async sendEmailToRecipient(recipient: string, subject: string, filePath: string = ''){
+    async composeAndSendEmail(recipient: string, subject: string, filePath: string = ''){
         await test.step(`Create and send email with subject: ${subject} to ${recipient}`, async () => {
             await this.setMailRecipient(recipient)
             await this.setMailSubject(subject)

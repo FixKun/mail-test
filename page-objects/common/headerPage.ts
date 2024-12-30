@@ -11,13 +11,13 @@ export class HeaderPage {
         this.documentsButton = this.page.locator('#nav-docs')
     }
 
-    async goToMail(){
+    async navigateToMail(){
         await test.step(`Navigate to Mail page`, async () => {
             await this.emailButton.click()
         })
     }
 
-    async goToDocs(){
+    async navigateToDocuments(){
         await test.step(`Navigate to Documents page`, async () => {
             await this.documentsButton.click()
         })

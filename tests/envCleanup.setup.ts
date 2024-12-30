@@ -23,7 +23,7 @@ setup('cleanup environment', async ({page}) => {
     })
     // Cleanup Documents 
     await setup.step(`Cleanup Documents `, async () => {
-        await header.goToDocs()
+        await header.navigateToDocuments()
         await docs.navPanel.openRootFolder()
         await docs.clearCurrentFolder(false)
         await docs.navPanel.openFolderByName(folderNames.trash)
@@ -31,7 +31,7 @@ setup('cleanup environment', async ({page}) => {
     })
     // Cleanup Mail
     await setup.step(`Cleanup Mail`, async () => {
-        await header.goToMail()
+        await header.navigateToMail()
         for (const folder of [folderNames.inbox, folderNames.sent]) {
             await mail.navPanel.openFolderByName(folder)
             await mail.clearCurrentFolder(false)

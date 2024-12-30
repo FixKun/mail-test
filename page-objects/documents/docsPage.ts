@@ -40,10 +40,11 @@ export class DocsPage extends BaseListPage {
             steps: 5,
           })
           await this.page.mouse.up()
+          await this.page.waitForTimeout(10)
       })
     }
 
-    async checkThatFileIsInTheFolder(fileName: string, folderName: string){
+    async verifyDocumentInFolder(fileName: string, folderName: string){
       await test.step(`Validate that ${fileName} document is in ${folderName} folder`, async () => {
           await this.navPanel.openFolderByName(folderName)
           await this.documentByNameExists(fileName)

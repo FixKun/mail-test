@@ -34,7 +34,7 @@ export class MainMailPage extends BaseListPage {
         }) 
     }
 
-    async clickCreateNewEmailButton(){
+    async startNewEmail(){
         await test.step(`Open email creation frame`, async () => {
             await this.createNewEmailButton.click()
         })
@@ -44,7 +44,7 @@ export class MainMailPage extends BaseListPage {
      * Function refreshes email list until number of unread emails will be greater than provided value or until times out
      * @param oldValue Value of unread emails before the check
      */
-        async waitForMailCountToIncrease(oldValue: number){
+        async waitForNewEmail(oldValue: number){
             await test.step(`Wait for unread counter to increase`, async () => {
                 await expect(async () => {
                     await this.toolbar.refresh()
@@ -58,7 +58,7 @@ export class MainMailPage extends BaseListPage {
      * Will select the latest email with a given subject
      * @param subject Email subject 
      */
-    async selectUnreadEmailBySubject(subject: string){
+    async openUnreadEmailBySubject(subject: string){
         await test.step(`Get the latest unread email by subject: ${subject}`, async () => {
             await this.page.locator('.listUnread', { hasText: subject}).first().click()
         })
