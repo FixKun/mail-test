@@ -8,7 +8,10 @@ import data from '../data/mailTest.json'
 test.describe('E2E test', {
     tag: '@e2e'
 }, () => {
-    test('mail-001 @smoke - User can send an email with an attachment and manage the file lifecycle', async ({onMainMailPage, onMailPage, onViewMailPage, onDocsPage}) => {
+    test('mail-001 - User can send an email with an attachment and manage the file lifecycle', {
+        tag: '@smoke'
+    },
+    async ({onMainMailPage, onMailPage, onViewMailPage, onDocsPage}) => {
         const fileName = await createRandomTextFile(dataDirPath)
         const unreadCount = await onMainMailPage.getUnreadCount()
         await onMainMailPage.startNewEmail()
