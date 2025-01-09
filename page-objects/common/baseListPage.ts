@@ -1,10 +1,10 @@
 import { Page, Locator } from "@playwright/test"
 import { headerButtonNames as buttons } from '../../constants/enums' 
-import { NavPanelPage } from "./navPanel"
+import { NavPanel } from "./navPanel"
 import { BasePage } from "./basePage"
 
 export abstract class BaseListPage extends BasePage{
-    readonly abstract navPanel: NavPanelPage
+    readonly abstract navPanel: NavPanel
     protected readonly selectAllCheckbox: Locator
     protected readonly documentsByName: (name: string) => Locator = (text: string) => this.page.locator('tbody tr', {'hasText': text})
 

@@ -1,6 +1,6 @@
 import { test as setup, expect } from '@playwright/test'
 import { DocsPage } from "../page-objects/documents/docsPage"
-import { HeaderPage } from "../page-objects/common/headerPage"
+import { HeaderBar } from "../page-objects/common/headerBar"
 import { MainMailPage } from "../page-objects/mail/mainMailPage"
 import { folderNames } from '../constants/enums' 
 import { dataDirPath } from '../constants/constants'
@@ -10,7 +10,7 @@ setup('cleanup environment', async ({page}) => {
 
     const docs = new DocsPage(page)
     const mail = new MainMailPage(page)
-    const header = new HeaderPage(page)
+    const header = new HeaderBar(page)
     await setup.step(`Navigate to the main page`, async () => {
         await page.goto('/flatx/index.jsp')
     })

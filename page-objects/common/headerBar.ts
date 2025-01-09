@@ -1,6 +1,6 @@
 import { Locator, Page, test } from "@playwright/test"
 
-export class HeaderPage {
+export class HeaderBar {
     private readonly page: Page
     private readonly emailButton: Locator
     private readonly documentsButton: Locator

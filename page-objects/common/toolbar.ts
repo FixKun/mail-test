@@ -1,7 +1,7 @@
 import { Locator, Page, test } from "@playwright/test"
 import { headerButtonNames as buttons } from '../../constants/enums' 
 
-export class ToolbarPage {
+export class Toolbar {
     private readonly page: Page
 
     constructor(page: Page){

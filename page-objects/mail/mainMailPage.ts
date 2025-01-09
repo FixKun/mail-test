@@ -1,10 +1,10 @@
 import { expect, Locator, Page, test } from "@playwright/test"
 import { BaseListPage } from "../common/baseListPage"
 import { headerButtonNames as buttons } from '../../constants/enums' 
-import { NavPanelPage } from "../common/navPanel"
+import { NavPanel } from "../common/navPanel"
 
 export class MainMailPage extends BaseListPage {
-    readonly navPanel: NavPanelPage
+    readonly navPanel: NavPanel
     readonly createNewEmailButton: Locator
     readonly inboxMenu: Locator
 
@@ -12,7 +12,7 @@ export class MainMailPage extends BaseListPage {
         super(page)
         this.createNewEmailButton = this.page.locator('#mailNewBtn')
         this.inboxMenu = this.page.locator('#treeInbox')
-        this.navPanel = new NavPanelPage(this.page, this.page.locator('.treePanel', {'hasText': '@mailfence.com'}))
+        this.navPanel = new NavPanel(this.page, this.page.locator('.treePanel', {'hasText': '@mailfence.com'}))
 
     }
 

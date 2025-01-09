@@ -1,6 +1,6 @@
 import { Locator, Page, test } from "@playwright/test"
 
-export class NavPanelPage {
+export class NavPanel {
     private readonly page: Page
     private readonly parentLocator: Locator
 

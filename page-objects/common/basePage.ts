@@ -1,18 +1,18 @@
 import { Page, Locator } from "@playwright/test"
-import { HeaderPage } from "./headerPage"
-import { ToolbarPage } from "./toolbarPage"
+import { HeaderBar } from "./headerBar"
+import { Toolbar } from "./toolbar"
 
 export abstract class BasePage{
     protected readonly page: Page
     protected readonly confirmationDialog: Locator
-    readonly header: HeaderPage
-    readonly toolbar: ToolbarPage
+    readonly header: HeaderBar
+    readonly toolbar: Toolbar
 
     constructor(page: Page){
         this.page = page
         this.confirmationDialog = this.page.locator('#msgBox')
-        this.header = new HeaderPage(this.page)
-        this.toolbar = new ToolbarPage(this.page)
+        this.header = new HeaderBar(this.page)
+        this.toolbar = new Toolbar(this.page)
     }
 
     async acceptDialog(){

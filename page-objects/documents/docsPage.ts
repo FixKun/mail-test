@@ -1,13 +1,13 @@
 import { expect, Locator, Page, test } from "@playwright/test"
 import { BaseListPage } from "../common/baseListPage"
-import { NavPanelPage } from "../common/navPanel"
+import { NavPanel } from "../common/navPanel"
 
 export class DocsPage extends BaseListPage {
-    readonly navPanel: NavPanelPage 
+    readonly navPanel: NavPanel
 
     constructor(page: Page){
         super(page)
-        this.navPanel = new NavPanelPage(this.page, this.page.locator('.treePanel', {'hasText': 'My Documents'}))
+        this.navPanel = new NavPanel(this.page, this.page.locator('.treePanel', {'hasText': 'My Documents'}))
     }
 
     async documentByNameExists(name:string){

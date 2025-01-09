@@ -3,7 +3,7 @@ import { LoginPage } from "./loginPage"
 import { MainMailPage } from "./mail/mainMailPage"
 import { CreateMailPage } from "./mail/createMailPage"
 import { ViewMailPage } from "./mail/viewMailPage"
-import { HeaderPage } from "./common/headerPage"
+import { HeaderBar } from "./common/headerBar"
 import { DocsPage } from "./documents/docsPage"
 
 
@@ -13,7 +13,7 @@ export class PageManager{
     private readonly mainMailPage: MainMailPage
     private readonly mailPage: CreateMailPage
     private readonly viewMailPage: ViewMailPage
-    private readonly headerPage: HeaderPage
+    private readonly headerPage: HeaderBar
     private readonly docsPage: DocsPage
 
     constructor(page: Page){
@@ -22,7 +22,7 @@ export class PageManager{
         this.mainMailPage = new MainMailPage(this.page)
         this.mailPage = new CreateMailPage(this.page)
         this.viewMailPage = new ViewMailPage(this.page)
-        this.headerPage = new HeaderPage(this.page)
+        this.headerPage = new HeaderBar(this.page)
         this.docsPage = new DocsPage(this.page)
     }
 

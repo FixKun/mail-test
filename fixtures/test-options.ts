@@ -3,7 +3,7 @@ import { PageManager } from "../page-objects/pageManager"
 import { MainMailPage } from '../page-objects/mail/mainMailPage'
 import { CreateMailPage } from '../page-objects/mail/createMailPage'
 import { ViewMailPage } from '../page-objects/mail/viewMailPage'
-import { HeaderPage } from '../page-objects/common/headerPage'
+import { HeaderBar } from '../page-objects/common/headerBar'
 import { DocsPage } from '../page-objects/documents/docsPage'
 
 export type TestOptions = {
@@ -12,7 +12,7 @@ export type TestOptions = {
     onMainMailPage: MainMailPage
     onMailPage: CreateMailPage,
     onViewMailPage: ViewMailPage, 
-    onHeaderPage: HeaderPage,
+    onHeaderPage: HeaderBar,
     onDocsPage: DocsPage
 }
 
@@ -41,7 +41,7 @@ export const test = base.extend<TestOptions>({
     },
 
     onHeaderPage: async ({ page }, use) => {
-        await use(new HeaderPage(page))
+        await use(new HeaderBar(page))
     },
 
     onDocsPage: async ({ page }, use) => {
