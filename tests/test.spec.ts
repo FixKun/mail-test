@@ -11,16 +11,16 @@ test.describe('E2E test', {
     test('mail-001 - User can send an email with an attachment and manage the file lifecycle', {
         tag: '@smoke'
     },
-    async ({onMainMailPage, onMailPage, onViewMailPage, onDocsPage}) => {
+    async ({mailPage, docsPage}) => {
         const fileName = await createRandomTextFile(dataDirPath)
-        const unreadCount = await onMainMailPage.getUnreadCount()
-        await onMainMailPage.startNewEmail()
-        await onMailPage.composeAndSendEmail(data.destinationEmail, data.mailSubject, `${dataDirPath}/${fileName}`)
-        await onMainMailPage.waitForNewEmail(unreadCount)
-        await onMainMailPage.openUnreadEmailBySubject(data.mailSubject)
-        await onViewMailPage.saveAttachmentByNameInMyDocuments(fileName)
-        await onViewMailPage.header.navigateToDocuments()
-        await onDocsPage.dragAndDropDocumentToFolderByName(fileName, folderNames.trash)
-        await onDocsPage.verifyDocumentInFolder(fileName, folderNames.trash)
+        const unreadCount = await mailPage.getUnreadCount()
+        await mailPage.startNewEmail()
+        await mailPage.createMailForm.composeAndSendEmail(data.destinationEmail, data.mailSubject, `${dataDirPath}/${fileName}`)
+        await mailPage.waitForNewEmail(unreadCount)
+        await mailPage.openUnreadEmailBySubject(data.mailSubject)
+        await mailPage.viewMailPanel.saveAttachmentByNameInMyDocuments(fileName)
+        await mailPage.header.navigateToDocuments()
+        await docsPage.dragAndDropDocumentToFolderByName(fileName, folderNames.trash)
+        await docsPage.verifyDocumentInFolder(fileName, folderNames.trash)
     })
 })

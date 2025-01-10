@@ -1,5 +1,5 @@
 import { Locator, Page, test } from "@playwright/test"
-import { headerButtonNames as buttons } from '../../constants/enums' 
+import { headerButtonNames as buttons } from "../../../constants/enums"
 
 export class Toolbar {
     private readonly page: Page
@@ -21,6 +21,5 @@ export class Toolbar {
     async refresh(){
         await this.getToolbarItemByName(buttons.refresh).click()
     }
-
 
 }

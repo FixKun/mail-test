@@ -1,9 +1,9 @@
 import { Page } from "@playwright/test"
 import { LoginPage } from "./loginPage"
-import { MainMailPage } from "./mail/mainMailPage"
-import { CreateMailPage } from "./mail/createMailPage"
-import { ViewMailPage } from "./mail/viewMailPage"
-import { HeaderBar } from "./common/headerBar"
+import { MainMailPage } from "./mail/mailPage"
+import { CreateMailPage } from "./mail/components/createMailForm"
+import { ViewMailPage } from "./mail/components/viewMailPanel"
+import { HeaderBar } from "./common/components/headerBar"
 import { DocsPage } from "./documents/docsPage"
 
 

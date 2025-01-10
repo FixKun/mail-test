@@ -1,6 +1,6 @@
 import { Page, Locator } from "@playwright/test"
-import { HeaderBar } from "./headerBar"
-import { Toolbar } from "./toolbar"
+import { HeaderBar } from "./components/headerBar"
+import { Toolbar } from "./components/toolbar"
 
 export abstract class BasePage{
     protected readonly page: Page

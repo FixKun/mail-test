@@ -1,10 +1,15 @@
 import { expect, Locator, Page, test } from "@playwright/test"
 import { BaseListPage } from "../common/baseListPage"
 import { headerButtonNames as buttons } from '../../constants/enums' 
-import { NavPanel } from "../common/navPanel"
+import { NavPanel } from "../common/components/navPanel"
+import { CreateMailForm } from "./components/createMailForm"
+import { ViewMailPanel } from "./components/viewMailPanel"
 
-export class MainMailPage extends BaseListPage {
+
+export class MailPage extends BaseListPage {
     readonly navPanel: NavPanel
+    readonly createMailForm: CreateMailForm
+    readonly viewMailPanel: ViewMailPanel
     readonly createNewEmailButton: Locator
     readonly inboxMenu: Locator
 
@@ -13,7 +18,8 @@ export class MainMailPage extends BaseListPage {
         this.createNewEmailButton = this.page.locator('#mailNewBtn')
         this.inboxMenu = this.page.locator('#treeInbox')
         this.navPanel = new NavPanel(this.page, this.page.locator('.treePanel', {'hasText': '@mailfence.com'}))
-
+        this.createMailForm = new CreateMailForm(this.page)
+        this.viewMailPanel = new ViewMailPanel(this.page)
     }
 
     async selectAllItems(): Promise<boolean> {
@@ -40,7 +46,7 @@ export class MainMailPage extends BaseListPage {
         })
     }
 
-        /**
+     /**
      * Function refreshes email list until number of unread emails will be greater than provided value or until times out
      * @param oldValue Value of unread emails before the check
      */
