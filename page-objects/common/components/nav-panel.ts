@@ -1,4 +1,4 @@
-import { Locator, Page, test } from "@playwright/test"
+import { Locator, Page } from "@playwright/test"
 
 export class NavPanel {
     private readonly page: Page

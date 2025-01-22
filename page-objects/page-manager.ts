@@ -1,7 +1,7 @@
 import { Page } from "@playwright/test"
+import { DocsPage } from "./documents/docs-page"
 import { LoginPage } from "./login-page"
 import { MailPage } from "./mail/mail-page"
-import { DocsPage } from "./documents/docs-page"
 
 
 export class PageManager{

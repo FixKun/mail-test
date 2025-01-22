@@ -1,7 +1,7 @@
-import {test as base, mergeTests} from '@playwright/test'
-import { PageManager } from "../page-objects/page-manager"
-import { MailPage } from '../page-objects/mail/mail-page'
+import { test as base } from '@playwright/test'
 import { DocsPage } from '../page-objects/documents/docs-page'
+import { MailPage } from '../page-objects/mail/mail-page'
+import { PageManager } from "../page-objects/page-manager"
 
 export type TestOptions = {
     navigateToMainPage: string,

@@ -1,4 +1,4 @@
-import { expect, Locator, Page, test } from "@playwright/test"
+import { expect, Page, test } from "@playwright/test"
 import { BaseListPage } from "../common/base-list-page"
 import { NavPanel } from "../common/components/nav-panel"
 

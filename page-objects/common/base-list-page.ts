@@ -1,7 +1,7 @@
-import { Page, Locator } from "@playwright/test"
-import { headerButtonNames as buttons } from '../../constants/enums' 
-import { NavPanel } from "./components/nav-panel"
+import { Locator, Page } from "@playwright/test"
+import { headerButtonNames as buttons } from '../../constants/enums'
 import { BasePage } from "./base-page"
+import { NavPanel } from "./components/nav-panel"
 
 export abstract class BaseListPage extends BasePage{
     readonly abstract navPanel: NavPanel
