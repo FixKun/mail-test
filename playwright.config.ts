@@ -33,7 +33,7 @@ export default defineConfig({
         // Use prepared auth state.
         storageState: '.auth/user.json',
       },
-      testMatch: 'envCleanup.setup.ts',
+      testMatch: 'env-cleanup.setup.ts',
     }, 
     {
       name: 'setup', 

@@ -1,10 +1,10 @@
 import { Page } from "@playwright/test"
-import { LoginPage } from "./loginPage"
-import { MainMailPage } from "./mail/mailPage"
-import { CreateMailPage } from "./mail/components/createMailForm"
-import { ViewMailPage } from "./mail/components/viewMailPanel"
-import { HeaderBar } from "./common/components/headerBar"
-import { DocsPage } from "./documents/docsPage"
+import { LoginPage } from "./login-page"
+import { MainMailPage } from "./mail/mail-page"
+import { CreateMailPage } from "./mail/components/create-mail-form"
+import { ViewMailPage } from "./mail/components/view-mail-panel"
+import { HeaderBar } from "./common/components/header-bar"
+import { DocsPage } from "./documents/docs-page"
 
 
 export class PageManager{

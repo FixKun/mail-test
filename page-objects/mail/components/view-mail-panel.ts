@@ -1,5 +1,5 @@
 import { expect, Locator, Page, test } from "@playwright/test"
-import { BasePage } from "../../common/basePage"
+import { BasePage } from "../../common/base-page"
 
 export class ViewMailPanel extends BasePage{
     private readonly attachmentByFilename: (name: string) => Locator

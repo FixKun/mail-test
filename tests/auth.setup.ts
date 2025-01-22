@@ -1,5 +1,5 @@
 import { test as setup } from '@playwright/test'
-import { LoginPage } from '../page-objects/loginPage'
+import { LoginPage } from '../page-objects/login-page'
 
 const authFile = '.auth/user.json'
 

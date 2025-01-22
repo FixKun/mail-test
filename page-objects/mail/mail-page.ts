@@ -1,9 +1,9 @@
 import { expect, Locator, Page, test } from "@playwright/test"
-import { BaseListPage } from "../common/baseListPage"
+import { BaseListPage } from "../common/base-list-page"
 import { headerButtonNames as buttons } from '../../constants/enums' 
-import { NavPanel } from "../common/components/navPanel"
-import { CreateMailForm } from "./components/createMailForm"
-import { ViewMailPanel } from "./components/viewMailPanel"
+import { NavPanel } from "../common/components/nav-panel"
+import { CreateMailForm } from "./components/create-mail-form"
+import { ViewMailPanel } from "./components/view-mail-panel"
 
 
 export class MailPage extends BaseListPage {

@@ -1,6 +1,6 @@
 import { test as setup, expect } from '@playwright/test'
-import { DocsPage } from "../page-objects/documents/docsPage"
-import { MailPage } from "../page-objects/mail/mailPage"
+import { DocsPage } from "../page-objects/documents/docs-page"
+import { MailPage } from "../page-objects/mail/mail-page"
 import { folderNames } from '../constants/enums' 
 import { dataDirPath } from '../constants/constants'
 import * as fs from 'fs/promises'

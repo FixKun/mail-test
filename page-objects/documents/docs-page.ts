@@ -1,6 +1,6 @@
 import { expect, Locator, Page, test } from "@playwright/test"
-import { BaseListPage } from "../common/baseListPage"
-import { NavPanel } from "../common/components/navPanel"
+import { BaseListPage } from "../common/base-list-page"
+import { NavPanel } from "../common/components/nav-panel"
 
 export class DocsPage extends BaseListPage {
     readonly navPanel: NavPanel
