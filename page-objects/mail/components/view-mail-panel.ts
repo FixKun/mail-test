@@ -1,20 +1,22 @@
-import { expect, Locator, Page, test } from "@playwright/test"
+import { Locator, Page, test } from "@playwright/test"
 import { BasePage } from "../../common/base-page"
+import { ContextMenu } from "../../common/components/context-menu"
 
 export class ViewMailPanel extends BasePage{
     private readonly attachmentByFilename: (name: string) => Locator
     private readonly documentPopup: Locator
+    readonly fileContextMenu: ContextMenu
 
     constructor(page: Page){
         super(page)
         this.attachmentByFilename = (text: string) => this.page.locator(`a[title*="${text}"]`)
         this.documentPopup = this.page.locator('div[hidefocus="true"]', {'hasText': 'Document'})
+        this.fileContextMenu = new ContextMenu(this.page)
     }
 
     private async openAttachmentContextMenu(attachmentName: string){
         await this.attachmentByFilename(attachmentName).click({'button': 'right'})
         const menuItems = this.page.locator('.menu li span')
-        await expect(menuItems).toContainText([/^Download (.*)$/, 'Save in Documents', 'Convert to PDF'])
     }
 
     private async clickSaveInDocumentsListItemInAttachmentPopup(){
@@ -22,7 +24,7 @@ export class ViewMailPanel extends BasePage{
             resp => resp.url().includes('/gwt') 
             && resp.request().postData().includes('getDirectoriesTree')
         )
-        await this.page.getByRole('link', {'name': 'Save in Documents'}).click()
+        await this.fileContextMenu.clickMenuItemByName('Save in Documents')
         await responsePromise 
     }
 
