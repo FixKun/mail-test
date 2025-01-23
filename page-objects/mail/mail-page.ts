@@ -49,7 +49,8 @@ export class MailPage extends BaseListPage {
      * Function refreshes email list until number of unread emails will be greater than provided value or until times out
      * @param oldValue Value of unread emails before the check
      */
-        async waitForNewEmail(oldValue: number){
+        async waitForNewEmail(){
+            const oldValue = await this.getUnreadCount()
             await test.step(`Wait for unread counter to increase`, async () => {
                 await expect(async () => {
                     await this.toolbar.refresh()
@@ -58,6 +59,17 @@ export class MailPage extends BaseListPage {
                 }).toPass()
             })
         }
+
+        async waitForUnreadEmailBySubject(subject: string){
+            await test.step(`Wait for unread email with subject "${subject}"`, async () => {
+                await expect(async () => {
+                    await this.toolbar.refresh()
+                    let mail = this.page.locator('tr.listUnread', { hasText: subject })
+                    await expect(mail).toBeAttached()
+                }).toPass()
+            })
+        }
+
 
     /**
      * Will select the latest email with a given subject
@@ -70,7 +82,7 @@ export class MailPage extends BaseListPage {
     }
 
     private async getEmailsBySubject(subject: string){
-        await this.page.waitForSelector('.listSubject', { state: 'attached', timeout: 5000 });
+        await this.page.waitForSelector('.listSubject', { state: 'attached', timeout: 5000 })
         return this.page.locator('tr', { hasText: subject })
     }
 

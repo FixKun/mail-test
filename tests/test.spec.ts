@@ -4,7 +4,6 @@ import data from '../data/mail-test.json'
 import { test } from '../fixtures/test-options'
 import { createRandomTextFile } from './helpers'
 
-
 test.describe('E2E test', {
     tag: '@e2e'
 }, () => {
@@ -22,11 +21,10 @@ test.describe('E2E test', {
     },
     async ({mailPage, docsPage}, testInfo) => {
         const uniqueSubject = data.mailSubject + testInfo.parallelIndex
-        const fileName = await createRandomTextFile(dataDirPath)
-        const unreadCount = await mailPage.getUnreadCount()
+        const fileName = await createRandomTextFile()
         await mailPage.startNewEmail()
         await mailPage.createMailForm.composeAndSendEmail(data.destinationEmail, uniqueSubject, `${dataDirPath}/${fileName}`)
-        await mailPage.waitForNewEmail(unreadCount)
+        await mailPage.waitForUnreadEmailBySubject(uniqueSubject)
         await mailPage.openUnreadEmailBySubject(uniqueSubject)
         await mailPage.viewMailPanel.saveAttachmentByNameInMyDocuments(fileName)
         await mailPage.header.navigateToDocuments()
