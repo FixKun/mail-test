@@ -15,7 +15,7 @@ export class DocsPage extends BaseListPage {
     }
     
     async selectAllItems(): Promise<boolean> {
-        return this.selectAllItemsGeneric('getDocuments', '.docType')
+        return this.baseSelectAllItems('getDocuments', '.docType')
       }
 
     // STEPS
@@ -51,4 +51,35 @@ export class DocsPage extends BaseListPage {
           await this.documentByNameExists(fileName)
       })
     }
+
+    private async pageHasDocuments(timeout = 3000): Promise<boolean> {
+      const result = await Promise.race([
+        this.page.waitForSelector('div:has-text("no documents")', { state: 'attached', timeout })
+          .then(() => false as const), 
+        this.page.waitForSelector('.name', { state: 'attached', timeout })
+          .then(() => true as const), 
+      ]);
+    
+      return result
+    }
+
+    private async getDocumentsByName(name: string){
+      const pageHasDocs = await this.pageHasDocuments()
+      if (pageHasDocs){
+        return this.page.locator('tr', { hasText: name })
+      } else {
+        return this.page.locator('non-existent-selector')
+      }
+      
+  }
+
+    async selectDocumentsByName(name: string){
+      await test.step(`Select all documents by name: ${name}`, async () => {
+      let docs = await this.getDocumentsByName(name) 
+      const count = await docs.count()
+      for (let i = 0; i < count; i++) {
+          await docs.nth(i).locator('.checkIcon').click()
+      }
+    })
+  }
 }

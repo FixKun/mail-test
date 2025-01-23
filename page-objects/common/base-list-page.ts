@@ -42,7 +42,7 @@ export abstract class BaseListPage extends BasePage{
      * @param itemSelector CSS selector to identify a list item in the list
      * @returns Return true if there is something to select. Otherwise will return false
      */
-     protected async selectAllItemsGeneric(
+     protected async baseSelectAllItems(
         responseFilter: string,
         itemSelector: string
       ): Promise<boolean> {

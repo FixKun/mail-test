@@ -13,7 +13,8 @@ export class Toolbar {
     }
 
     // Generic function
-    async clickToolbarItemByName(name: string){
+    async clickToolbarItemByName(name: string, timeout = 2000){
+        // const toolbarItem = this.getToolbarItemByName(name)
         await this.getToolbarItemByName(name).click()
     }
 

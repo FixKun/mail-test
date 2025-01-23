@@ -16,9 +16,7 @@ setup('cleanup environment', async ({page}) => {
     // Cleanup file system
     await setup.step(`Cleanup file system`, async () => {
         const filePath = `${dataDirPath}/${process.env.FILE_NAME}`
-        if (filePath){
-            await fs.unlink(filePath)
-        }
+        await fs.unlink(filePath)
     })
     // Cleanup Documents 
     await setup.step(`Cleanup Documents `, async () => {

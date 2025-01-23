@@ -24,17 +24,8 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
       dependencies: ['setup'],
-      teardown: 'envCleanup', 
     },
-    {
-      name: 'envCleanup',
-      use: {
-        ...devices['Desktop Chrome'],
-        // Use prepared auth state.
-        storageState: '.auth/user.json',
-      },
-      testMatch: 'env-cleanup.setup.ts',
-    }, 
+
     {
       name: 'setup', 
       testMatch: 'auth.setup.ts',

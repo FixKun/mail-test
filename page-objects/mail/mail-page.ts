@@ -22,7 +22,7 @@ export class MailPage extends BaseListPage {
     }
 
     async selectAllItems(): Promise<boolean> {
-        return this.selectAllItemsGeneric('getFolderMessages', '.listSubject')
+        return this.baseSelectAllItems('getFolderMessages', '.listSubject')
       }
 
       // STEPS
@@ -68,4 +68,20 @@ export class MailPage extends BaseListPage {
             await this.page.locator('.listUnread', { hasText: subject}).first().click()
         })
     }
+
+    private async getEmailsBySubject(subject: string){
+        await this.page.waitForSelector('.listSubject', { state: 'attached', timeout: 5000 });
+        return this.page.locator('tr', { hasText: subject })
+    }
+
+    async selectEmailsBySubject(subject: string){
+            await test.step(`Select all emails by subject: ${subject}`, async () => {
+            let emails = await this.getEmailsBySubject(subject) 
+            const count = await emails.count()
+            for (let i = 0; i < count; i++) {
+                await emails.nth(i).locator('.checkIcon').click()
+            }
+        })
+    }
+
 }

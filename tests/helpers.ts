@@ -2,6 +2,7 @@ import { faker as fake } from '@faker-js/faker'
 import { test } from "@playwright/test"
 import fs from 'fs'
 
+
 /**
  * Creates a file with a random name and content. Returns file name and sets FILE_NAME env var 
  * @param directoryPath A path to save a file. Will save into a current folder by default. Should be without a trailing slash
