@@ -25,6 +25,21 @@ export class MailPage extends BaseListPage {
         return this.baseSelectAllItems('getFolderMessages', '.listSubject')
       }
 
+      private async getEmailsBySubject(subject: string){
+        await this.page.waitForSelector('.listSubject', { state: 'attached', timeout: 5000 })
+        return this.page.locator('tr', { hasText: subject })
+    }
+
+    async selectEmailsBySubject(subject: string){
+            await test.step(`Select all emails by subject: ${subject}`, async () => {
+            let emails = await this.getEmailsBySubject(subject) 
+            const count = await emails.count()
+            for (let i = 0; i < count; i++) {
+                await emails.nth(i).locator('.checkIcon').click()
+            }
+        })
+    }
+
       // STEPS
       async getUnreadCount(): Promise<number>{
         return await test.step(`Get unread emails count`, async () => {
@@ -78,21 +93,6 @@ export class MailPage extends BaseListPage {
     async openUnreadEmailBySubject(subject: string){
         await test.step(`Get the latest unread email by subject: ${subject}`, async () => {
             await this.page.locator('.listUnread', { hasText: subject}).first().click()
-        })
-    }
-
-    private async getEmailsBySubject(subject: string){
-        await this.page.waitForSelector('.listSubject', { state: 'attached', timeout: 5000 })
-        return this.page.locator('tr', { hasText: subject })
-    }
-
-    async selectEmailsBySubject(subject: string){
-            await test.step(`Select all emails by subject: ${subject}`, async () => {
-            let emails = await this.getEmailsBySubject(subject) 
-            const count = await emails.count()
-            for (let i = 0; i < count; i++) {
-                await emails.nth(i).locator('.checkIcon').click()
-            }
         })
     }
 
