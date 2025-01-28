@@ -25,7 +25,9 @@ export class MailPage extends BaseListPage {
     }
 
     async selectAllItems(): Promise<boolean> {
-        return this.baseSelectAllItems('getFolderMessages', '.listSubject')
+        return await test.step(`Select all mail`, async () => {
+            return this.baseSelectAllItems('getFolderMessages', '.listSubject')
+        })
       }
 
       private async getEmailsBySubject(subject: string){
@@ -35,11 +37,11 @@ export class MailPage extends BaseListPage {
 
     async selectEmailsBySubject(subject: string){
             await test.step(`Select all emails by subject: ${subject}`, async () => {
-            let emails = await this.getEmailsBySubject(subject)
-            const count = await emails.count()
-            for (let i = 0; i < count; i++) {
-                await emails.nth(i).locator('.checkIcon').click()
-            }
+                let emails = await this.getEmailsBySubject(subject)
+                const count = await emails.count()
+                for (let i = 0; i < count; i++) {
+                    await emails.nth(i).locator('.checkIcon').click()
+                }
         })
     }
 

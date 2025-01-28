@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test"
+import { Locator, Page, test } from "@playwright/test"
 
 export class NavPanel {
     private readonly page: Page
@@ -14,11 +14,15 @@ export class NavPanel {
     }
 
     async openRootFolder(){
-        await this.parentLocator.locator('div.treeItemRoot').click()
+        await test.step(`Open navigation panel's root folder`, async () => {
+            await this.parentLocator.locator('div.treeItemRoot').click()
+        })
     }
 
     async openFolderByName(name: string){
-        await  this.getNavItemByName(name).click()
+        await test.step(`Open "${name}" folder in navigation panel`, async () => {
+            await  this.getNavItemByName(name).click()
+        })
     }
 
 }

@@ -11,11 +11,15 @@ export class DocsPage extends BaseListPage {
     }
 
     async documentByNameExists(name:string){
-        await expect(this.documentsByName(name).first()).toBeVisible()
+        await test.step(`Check that document with name "${name}" exists`, async () => {
+          await expect(this.documentsByName(name).first()).toBeVisible()
+        })
     }
     
     async selectAllItems(): Promise<boolean> {
-        return this.baseSelectAllItems('getDocuments', '.docType')
+        return await test.step(`Select all documents`, async () => {
+          return this.baseSelectAllItems('getDocuments', '.docType')
+        })
       }
 
       private async pageHasDocuments(timeout = 3000): Promise<boolean> {
@@ -49,8 +53,6 @@ export class DocsPage extends BaseListPage {
       })
     }
 
-    // STEPS
-    
      /**
      * Drag'n'drops document (docName) to a folder (folderName) in nav panel
      * @param docName Document name to drag'n'drop

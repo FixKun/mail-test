@@ -15,29 +15,34 @@ export class ViewMailPanel extends BasePage{
     }
 
     private async openAttachmentContextMenu(attachmentName: string){
-        await this.attachmentByFilename(attachmentName).click({'button': 'right'})
-        const menuItems = this.page.locator('.menu li span')
+        await test.step(`Open attachment context menu`, async () => {
+            await this.attachmentByFilename(attachmentName).click({'button': 'right'})
+        })
     }
 
     private async clickSaveInDocumentsListItemInAttachmentPopup(){
-        const responsePromise  = this.page.waitForResponse(
-            resp => resp.url().includes('/gwt') 
-            && resp.request().postData().includes('getDirectoriesTree')
-        )
-        await this.fileContextMenu.clickMenuItemByName('Save in Documents')
-        await responsePromise 
+        await test.step(`Save documents in My Documents`, async () => {
+            const responsePromise  = this.page.waitForResponse(
+                resp => resp.url().includes('/gwt') 
+                && resp.request().postData().includes('getDirectoriesTree')
+            )
+            await this.fileContextMenu.clickMenuItemByName('Save in Documents')
+            await responsePromise 
+        })
     }
 
     private async selectRootNodeInDocsList(){
-        await this.documentPopup.locator('.treeItemLabel').first().click()
+        await test.step(`Select root node in documents list`, async () => {
+            await this.documentPopup.locator('.treeItemLabel').first().click()
+        })
     }
 
     private async clickSaveInDocsPopup(){
-        await this.documentPopup.locator('#dialBtn_OK:not(.GCSDBRWBMB)').click()
+        await test.step(`Click Save in popup`, async () => {
+            await this.documentPopup.locator('#dialBtn_OK:not(.GCSDBRWBMB)').click()
+        })
     }
 
-
-    // STEPS
     async saveAttachmentByNameInMyDocuments(attachmentName: string){
         await test.step(`Save attachment by name "${attachmentName}" in My Documents`, async () => {
             await this.openAttachmentContextMenu(attachmentName)
