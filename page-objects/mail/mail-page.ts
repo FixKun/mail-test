@@ -11,6 +11,8 @@ export class MailPage extends BaseListPage {
     readonly viewMailPanel: ViewMailPanel
     readonly createNewEmailButton: Locator
     readonly inboxMenu: Locator
+    readonly unreadEmailBySubject: (subject: string) => Locator
+    
 
     constructor(page: Page){
         super(page)
@@ -19,6 +21,7 @@ export class MailPage extends BaseListPage {
         this.navPanel = new NavPanel(this.page, this.page.locator('.treePanel', {'hasText': '@mailfence.com'}))
         this.createMailForm = new CreateMailForm(this.page)
         this.viewMailPanel = new ViewMailPanel(this.page)
+        this.unreadEmailBySubject = (text: string) => this.page.locator('tr.listUnread', { hasText: text })
     }
 
     async selectAllItems(): Promise<boolean> {
@@ -79,8 +82,8 @@ export class MailPage extends BaseListPage {
             await test.step(`Wait for unread email with subject "${subject}"`, async () => {
                 await expect(async () => {
                     await this.toolbar.refresh()
-                    let mail = this.page.locator('tr.listUnread', { hasText: subject }) // TODO: Pavel.Chachotkin 28 Jan 2025 Hardcoded locator
-                    await expect(mail).toBeAttached() // TODO: Pavel.Chachotkin 28 Jan 2025 provide custom message for each expect
+                    let mail = this.unreadEmailBySubject(subject) 
+                    await expect(mail, `Email with subject "${subject}" was not found in the inbox`).toBeAttached() 
                 }).toPass()
             })
         }

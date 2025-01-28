@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test"
+import { Locator, Page, test } from "@playwright/test"
 import { HeaderBar } from "./components/header-bar"
 import { Toolbar } from "./components/toolbar"
 
@@ -16,12 +16,14 @@ export abstract class BasePage{
     }
 
     async acceptDialog(){
-        await this.confirmationDialog.locator('#dialBtn_YES').click()
+        await test.step(`Accept dialog`, async () => {
+            await this.confirmationDialog.locator('#dialBtn_YES').click()
+        })
     }
 
     async declineDialog(){
-        await this.confirmationDialog.locator('#dialBtn_NO').click()
+        await test.step(`Decline dialog`, async () => {
+            await this.confirmationDialog.locator('#dialBtn_NO').click()
+        })
     }
-
-
 }

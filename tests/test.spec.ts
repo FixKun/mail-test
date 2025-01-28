@@ -9,9 +9,9 @@ test.describe('E2E test', {
 }, () => {
 
     test.afterEach(async ({cleanupEmail, cleanupDocument, cleanupFiles}, testInfo) => {
-        const subject = data.mailSubject + testInfo.parallelIndex
+        const subject = data.mailSubject + testInfo.testId
         await cleanupEmail(subject)
-        const fileName = process.env.FILE_NAME // TODO: Pavel.Chachotkin 28 Jan 2025 It's not clear where this environment variable was declared.
+        const fileName = testInfo.annotations.find(a => a.type === 'fileName').description 
         await cleanupDocument(fileName)
         await cleanupFiles(fileName)
     })
@@ -20,16 +20,16 @@ test.describe('E2E test', {
         tag: '@smoke'
     },
     async ({mailPage, docsPage}, testInfo) => {
-        const uniqueSubject = data.mailSubject + testInfo.parallelIndex // TODO: Pavel.Chachotkin 28 Jan 2025 Nice try, but it won't work between runs
-        // TODO: Pavel.Chachotkin 28 Jan 2025 Consider revisiting how files and file paths are handled.
-        const fileName = await createRandomTextFile()
+        const uniqueSubject = data.mailSubject + testInfo.testId 
+        const file = await createRandomTextFile()
+        testInfo.annotations.push({ type: 'fileName', description: file.fileName})
         await mailPage.startNewEmail()
-        await mailPage.createMailForm.composeAndSendEmail(data.destinationEmail, uniqueSubject, `${dataDirPath}/${fileName}`)
+        await mailPage.createMailForm.composeAndSendEmail(data.destinationEmail, uniqueSubject, file.filePath)
         await mailPage.waitForUnreadEmailBySubject(uniqueSubject)
         await mailPage.openUnreadEmailBySubject(uniqueSubject)
-        await mailPage.viewMailPanel.saveAttachmentByNameInMyDocuments(fileName)
+        await mailPage.viewMailPanel.saveAttachmentByNameInMyDocuments(file.fileName)
         await mailPage.header.navigateToDocuments()
-        await docsPage.dragAndDropDocumentToFolderByName(fileName, folderNames.trash)
-        await docsPage.verifyDocumentInFolder(fileName, folderNames.trash)
+        await docsPage.dragAndDropDocumentToFolderByName(file.fileName, folderNames.trash)
+        await docsPage.verifyDocumentInFolder(file.fileName, folderNames.trash)
     })
 })

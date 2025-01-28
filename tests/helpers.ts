@@ -8,15 +8,13 @@ import { dataDirPath } from '../constants/constants'
  * @param directoryPath A path to save a file. Will save into a current folder by default. Should be without a trailing slash
  * @returns A file name with .txt extension
  */
-export async function createRandomTextFile(): Promise<string> {
+export async function createRandomTextFile() {
     return await test.step(`Create random file`, async () => {
         const fileName = fake.system.commonFileName('txt')
         const fileContent = fake.lorem.words(30)
-        const directoryPath = dataDirPath // TODO: Pavel.Chachotkin 28 Jan 2025 Looks like extra line
-        const fullPath = `${directoryPath}/${fileName}`
+        const filePath = `${dataDirPath}/${fileName}`
 
-        fs.writeFileSync(fullPath, fileContent)
-        process.env.FILE_NAME = fileName // TODO: Pavel.Chachotkin 28 Jan 2025 Non-obvious use of an environment variable
-        return fileName
+        fs.writeFileSync(filePath, fileContent)
+        return {fileName, filePath}
     })
 }
