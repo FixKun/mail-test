@@ -11,7 +11,7 @@ test.describe('E2E test', {
     test.afterEach(async ({cleanupEmail, cleanupDocument, cleanupFiles}, testInfo) => {
         const subject = data.mailSubject + testInfo.parallelIndex
         await cleanupEmail(subject)
-        const fileName = process.env.FILE_NAME
+        const fileName = process.env.FILE_NAME // TODO: Pavel.Chachotkin 28 Jan 2025 It's not clear where this environment variable was declared.
         await cleanupDocument(fileName)
         await cleanupFiles(fileName)
     })
@@ -20,7 +20,8 @@ test.describe('E2E test', {
         tag: '@smoke'
     },
     async ({mailPage, docsPage}, testInfo) => {
-        const uniqueSubject = data.mailSubject + testInfo.parallelIndex
+        const uniqueSubject = data.mailSubject + testInfo.parallelIndex // TODO: Pavel.Chachotkin 28 Jan 2025 Nice try, but it won't work between runs
+        // TODO: Pavel.Chachotkin 28 Jan 2025 Consider revisiting how files and file paths are handled.
         const fileName = await createRandomTextFile()
         await mailPage.startNewEmail()
         await mailPage.createMailForm.composeAndSendEmail(data.destinationEmail, uniqueSubject, `${dataDirPath}/${fileName}`)

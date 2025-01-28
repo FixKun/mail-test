@@ -15,7 +15,7 @@ export class CreateMailForm {
         this.sendEmailButton = this.page.locator('#mailSend')
     }
 
-
+    // TODO: Pavel.Chachotkin 28 Jan 2025 Actions have to be wrapped by test.step()
     async setMailRecipient(recipient: string){
         await this.mailToField.fill(recipient)
     }
@@ -31,7 +31,7 @@ export class CreateMailForm {
     async attachFile(filePath: string){
         await this.attachmentMenu.click()
         const responsePromise = this.page.waitForResponse('/sw?type=gwtmail*')
-        await this.page.locator('input[type=file]').setInputFiles(filePath)
+        await this.page.locator('input[type=file]').setInputFiles(filePath)  // TODO: Pavel.Chachotkin 28 Jan 2025 Hardcoded locator
         await responsePromise
     }
 
@@ -44,7 +44,7 @@ export class CreateMailForm {
         await test.step(`Create and send email with subject: ${subject} to ${recipient}`, async () => {
             await this.setMailRecipient(recipient)
             await this.setMailSubject(subject)
-            if (filePath != ''){
+            if (filePath != ''){ // TODO: Pavel.Chachotkin 28 Jan 2025 Study the article on using optional parameters https://www.typescriptlang.org/docs/handbook/2/functions.html#optional-parameters
                 await this.attachFile(filePath)
             }
             await this.sendEmail()
