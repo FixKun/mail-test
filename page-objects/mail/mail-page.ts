@@ -12,6 +12,8 @@ export class MailPage extends BaseListPage {
     readonly createNewEmailButton: Locator
     readonly inboxMenu: Locator
     readonly unreadEmailBySubject: (subject: string) => Locator
+    readonly emailBySubject: (subject: string) => Locator
+    private readonly unreadCountDiv: Locator
     
 
     constructor(page: Page){
@@ -22,6 +24,8 @@ export class MailPage extends BaseListPage {
         this.createMailForm = new CreateMailForm(this.page)
         this.viewMailPanel = new ViewMailPanel(this.page)
         this.unreadEmailBySubject = (text: string) => this.page.locator('tr.listUnread', { hasText: text })
+        this.emailBySubject = (text: string) => this.page.locator('tr', { hasText: text })
+        this.unreadCountDiv = this.inboxMenu.locator('div div')
     }
 
     async selectAllItems(): Promise<boolean> {
@@ -32,7 +36,7 @@ export class MailPage extends BaseListPage {
 
       private async getEmailsBySubject(subject: string){
         await this.page.waitForSelector('.listSubject', { state: 'attached', timeout: 5000 })
-        return this.page.locator('tr', { hasText: subject })
+        return this.emailBySubject(subject)
     }
 
     async selectEmailsBySubject(subject: string){
@@ -45,13 +49,12 @@ export class MailPage extends BaseListPage {
         })
     }
 
-      // STEPS
       async getUnreadCount(): Promise<number>{
         return await test.step(`Get unread emails count`, async () => {
             expect(this.inboxMenu).toBeVisible()
-            const count = await this.inboxMenu.locator('div div').count()
+            const count = await this.unreadCountDiv.count()
             if(count > 0){
-                const count = await this.inboxMenu.locator('div div').textContent()
+                const count = await this.unreadCountDiv.textContent()
                 return Number(count)
             } else {
                 return 0
@@ -97,7 +100,7 @@ export class MailPage extends BaseListPage {
      */
     async openUnreadEmailBySubject(subject: string){
         await test.step(`Get the latest unread email by subject: ${subject}`, async () => {
-            await this.page.locator('.listUnread', { hasText: subject}).first().click()
+            await this.unreadEmailBySubject(subject).first().click()
         })
     }
 

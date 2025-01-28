@@ -1,15 +1,17 @@
-import { Page, test } from "@playwright/test"
+import { Page, Locator, test } from "@playwright/test"
 import { headerButtonNames as buttons } from "../../../constants/enums"
 
 export class Toolbar {
     private readonly page: Page
+    private readonly toolbarItemByName: (subject: string) => Locator
 
     constructor(page: Page){
         this.page = page
+        this.toolbarItemByName = (text: string) => this.page.locator('.toolbar').getByText(text)
     }
 
     getToolbarItemByName(name: string){
-        return this.page.locator('.toolbar').getByText(name)
+        return this.toolbarItemByName(name)
     }
 
     // Generic function

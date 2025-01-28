@@ -1,13 +1,15 @@
-import { expect, Page, test } from "@playwright/test"
+import { expect, Page, Locator, test } from "@playwright/test"
 import { BaseListPage } from "../common/base-list-page"
 import { NavPanel } from "../common/components/nav-panel"
 
 export class DocsPage extends BaseListPage {
     readonly navPanel: NavPanel
+    private readonly docRowByDocName: (name: string) => Locator
 
     constructor(page: Page){
         super(page)
         this.navPanel = new NavPanel(this.page, this.page.locator('.treePanel', {'hasText': 'My Documents'}))
+        this.docRowByDocName = (text: string) => this.page.locator('tr', { hasText: text })
     }
 
     async documentByNameExists(name:string){
@@ -36,7 +38,7 @@ export class DocsPage extends BaseListPage {
       private async getDocumentsByName(name: string){
         const pageHasDocs = await this.pageHasDocuments()
         if (pageHasDocs){
-          return this.page.locator('tr', { hasText: name })
+          return this.docRowByDocName(name)
         } else {
           return this.page.locator('non-existent-selector')
         }

@@ -5,6 +5,8 @@ import { ContextMenu } from "../../common/components/context-menu"
 export class ViewMailPanel extends BasePage{
     private readonly attachmentByFilename: (name: string) => Locator
     private readonly documentPopup: Locator
+    private readonly rootNodeInDocList: Locator
+    private readonly saveButtonInDocPopup: Locator
     readonly fileContextMenu: ContextMenu
 
     constructor(page: Page){
@@ -12,6 +14,8 @@ export class ViewMailPanel extends BasePage{
         this.attachmentByFilename = (text: string) => this.page.locator(`a[title*="${text}"]`)
         this.documentPopup = this.page.locator('div[hidefocus="true"]', {'hasText': 'Document'})
         this.fileContextMenu = new ContextMenu(this.page)
+        this.rootNodeInDocList = this.documentPopup.locator('.treeItemLabel').first()
+        this.saveButtonInDocPopup = this.documentPopup.locator('#dialBtn_OK:not(.GCSDBRWBMB)')
     }
 
     private async openAttachmentContextMenu(attachmentName: string){
@@ -33,13 +37,13 @@ export class ViewMailPanel extends BasePage{
 
     private async selectRootNodeInDocsList(){
         await test.step(`Select root node in documents list`, async () => {
-            await this.documentPopup.locator('.treeItemLabel').first().click()
+            await this.rootNodeInDocList.click()
         })
     }
 
     private async clickSaveInDocsPopup(){
         await test.step(`Click Save in popup`, async () => {
-            await this.documentPopup.locator('#dialBtn_OK:not(.GCSDBRWBMB)').click()
+            await this.saveButtonInDocPopup.click()
         })
     }
 
