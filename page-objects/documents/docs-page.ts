@@ -1,18 +1,32 @@
-import { expect, Page, Locator, test } from "@playwright/test"
-import { BaseListPage } from "../common/base-list-page"
+import { expect, Locator, Page, test } from "@playwright/test"
+import { BasePage } from "../common/base-page"
+import { HeaderBar } from "../common/components/header-bar"
 import { NavPanel } from "../common/components/nav-panel"
+import { Toolbar } from "../common/components/toolbar"
+import { ListPageHelper } from "../common/helpers/listPageHelper"
 
-export class DocsPage extends BaseListPage {
+export class DocsPage extends BasePage {
     readonly navPanel: NavPanel
+    readonly header: HeaderBar
+    readonly toolbar: Toolbar
     private readonly docRowByDocName: (name: string) => Locator
+    protected readonly selectAllCheckbox: Locator
+    private documentRow: Locator
+    private listPageHelper: ListPageHelper
+    protected readonly documentsByName: (name: string) => Locator = (text: string) => this.page.locator('tbody tr', {'hasText': text})
 
     constructor(page: Page){
         super(page)
+        this.header = new HeaderBar(this.page)
+        this.toolbar = new Toolbar(this.page)
         this.navPanel = new NavPanel(this.page, this.page.locator('.treePanel', {'hasText': 'My Documents'}))
         this.docRowByDocName = (text: string) => this.page.locator('tr', { hasText: text })
+        this.selectAllCheckbox = this.page.locator('div[title="Select all"]')
+        this.documentRow = this.page.locator('.docType')
+        this.listPageHelper = new ListPageHelper(this.page)
     }
 
-    async documentByNameExists(name:string){
+    async isDocumentByNameExists(name:string){
         await test.step(`Check that document with name "${name}" exists`, async () => {
           await expect(this.documentsByName(name).first()).toBeVisible()
         })
@@ -20,7 +34,17 @@ export class DocsPage extends BaseListPage {
     
     async selectAllItems(): Promise<boolean> {
         return await test.step(`Select all documents`, async () => {
-          return this.baseSelectAllItems('getDocuments', '.docType')
+        await this.listPageHelper.waitForRefresh('getDocuments')
+
+        const checkboxClasses = await this.selectAllCheckbox.getAttribute('class')
+        const itemsCount = await this.documentRow.count()
+
+        // click select all checkbox only if there's something to select
+        if (!checkboxClasses?.includes('tbBtnActive') && itemsCount > 0){
+            await this.selectAllCheckbox.click()
+            return true
+        } 
+        return false
         })
       }
 
@@ -30,7 +54,7 @@ export class DocsPage extends BaseListPage {
             .then(() => false as const), 
           this.page.waitForSelector('.name', { state: 'attached', timeout })
             .then(() => true as const), 
-        ]);
+        ])
       
         return result
       }
@@ -83,7 +107,11 @@ export class DocsPage extends BaseListPage {
     async verifyDocumentInFolder(fileName: string, folderName: string){
       await test.step(`Validate that ${fileName} document is in ${folderName} folder`, async () => {
           await this.navPanel.openFolderByName(folderName)
-          await this.documentByNameExists(fileName)
+          await this.isDocumentByNameExists(fileName)
       })
+    }
+
+    async deleteSelected(needsConfirmation: boolean){
+      await this.listPageHelper.deleteSelected(needsConfirmation)
     }
 }

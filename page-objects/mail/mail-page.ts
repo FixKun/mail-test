@@ -1,12 +1,17 @@
 import { expect, Locator, Page, test } from "@playwright/test"
-import { BaseListPage } from "../common/base-list-page"
+import { BasePage } from "../common/base-page"
+import { HeaderBar } from "../common/components/header-bar"
 import { NavPanel } from "../common/components/nav-panel"
+import { Toolbar } from "../common/components/toolbar"
+import { ListPageHelper } from "../common/helpers/listPageHelper"
 import { CreateMailForm } from "./components/create-mail-form"
 import { ViewMailPanel } from "./components/view-mail-panel"
 
 
-export class MailPage extends BaseListPage {
+export class MailPage extends BasePage {
     readonly navPanel: NavPanel
+    readonly header: HeaderBar
+    readonly toolbar: Toolbar
     readonly createMailForm: CreateMailForm
     readonly viewMailPanel: ViewMailPanel
     readonly createNewEmailButton: Locator
@@ -14,6 +19,9 @@ export class MailPage extends BaseListPage {
     readonly unreadEmailBySubject: (subject: string) => Locator
     readonly emailBySubject: (subject: string) => Locator
     private readonly unreadCountDiv: Locator
+    protected readonly selectAllCheckbox: Locator
+    private emailRow: Locator
+    private listPageHelper: ListPageHelper
     
 
     constructor(page: Page){
@@ -21,20 +29,36 @@ export class MailPage extends BaseListPage {
         this.createNewEmailButton = this.page.locator('#mailNewBtn')
         this.inboxMenu = this.page.locator('#treeInbox')
         this.navPanel = new NavPanel(this.page, this.page.locator('.treePanel', {'hasText': '@mailfence.com'}))
+        this.header = new HeaderBar(this.page)
+        this.toolbar = new Toolbar(this.page)
         this.createMailForm = new CreateMailForm(this.page)
         this.viewMailPanel = new ViewMailPanel(this.page)
         this.unreadEmailBySubject = (text: string) => this.page.locator('tr.listUnread', { hasText: text })
         this.emailBySubject = (text: string) => this.page.locator('tr', { hasText: text })
         this.unreadCountDiv = this.inboxMenu.locator('div div')
+        this.selectAllCheckbox = this.page.locator('div[title="Select all"]')
+        this.emailRow = this.page.locator('.listSubject')
+        this.listPageHelper = new ListPageHelper(this.page)
     }
 
     async selectAllItems(): Promise<boolean> {
-        return await test.step(`Select all mail`, async () => {
-            return this.baseSelectAllItems('getFolderMessages', '.listSubject')
+        return await test.step(`Select all documents`, async () => {
+            await this.listPageHelper.waitForRefresh('getFolderMessages')
+
+            const checkboxClasses = await this.selectAllCheckbox.getAttribute('class')
+            const itemsCount = await this.emailRow.count()
+
+            // click select all checkbox only if there's something to select
+            if (!checkboxClasses?.includes('tbBtnActive') && itemsCount > 0){
+                await this.selectAllCheckbox.click()
+                return true
+            } 
+            return false
         })
       }
 
-      private async getEmailsBySubject(subject: string){
+
+    private async getEmailsBySubject(subject: string){
         await this.page.waitForSelector('.listSubject', { state: 'attached', timeout: 5000 })
         return this.emailBySubject(subject)
     }
@@ -104,4 +128,7 @@ export class MailPage extends BaseListPage {
         })
     }
 
+    async deleteSelected(needsConfirmation: boolean){
+        await this.listPageHelper.deleteSelected(needsConfirmation)
+      }
 }

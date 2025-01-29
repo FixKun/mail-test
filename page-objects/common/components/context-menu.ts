@@ -14,5 +14,4 @@ export class ContextMenu {
             await this.menuItemByName(menuItemName).click()
         })
     }
-
 }

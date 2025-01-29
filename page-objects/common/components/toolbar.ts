@@ -1,4 +1,4 @@
-import { Page, Locator, test } from "@playwright/test"
+import { Page, Locator, test, expect } from "@playwright/test"
 import { headerButtonNames as buttons } from "../../../constants/enums"
 
 export class Toolbar {
@@ -17,7 +17,9 @@ export class Toolbar {
     // Generic function
     async clickToolbarItemByName(name: string, timeout = 2000){
         await test.step(`Click "${name}" button in the toolbar`, async () => {
-            await this.getToolbarItemByName(name).click()
+            const toolbarItem = this.getToolbarItemByName(name)
+            await expect(toolbarItem).not.toHaveClass('tbBtnDisabled')
+            await toolbarItem.click()
         })
     }
 
