@@ -12,7 +12,6 @@ export class DocsPage extends BasePage {
     private readonly docRowByDocName: (name: string) => Locator
     protected readonly selectAllCheckbox: Locator
     private documentRow: Locator
-    private listPageHelper: ListPageHelper
     protected readonly documentsByName: (name: string) => Locator = (text: string) => this.page.locator('tbody tr', {'hasText': text})
 
     constructor(page: Page){
@@ -23,7 +22,6 @@ export class DocsPage extends BasePage {
         this.docRowByDocName = (text: string) => this.page.locator('tr', { hasText: text })
         this.selectAllCheckbox = this.page.locator('div[title="Select all"]')
         this.documentRow = this.page.locator('.docType')
-        this.listPageHelper = new ListPageHelper(this.page)
     }
 
     async isDocumentByNameExists(name:string){
@@ -34,17 +32,18 @@ export class DocsPage extends BasePage {
     
     async selectAllItems(): Promise<boolean> {
         return await test.step(`Select all documents`, async () => {
-        await this.listPageHelper.waitForRefresh('getDocuments')
+          const listPageHelper = new ListPageHelper(this.page)
+          await listPageHelper.waitForRefresh('getDocuments')
 
-        const checkboxClasses = await this.selectAllCheckbox.getAttribute('class')
-        const itemsCount = await this.documentRow.count()
+          const checkboxClasses = await this.selectAllCheckbox.getAttribute('class')
+          const itemsCount = await this.documentRow.count()
 
-        // click select all checkbox only if there's something to select
-        if (!checkboxClasses?.includes('tbBtnActive') && itemsCount > 0){
-            await this.selectAllCheckbox.click()
-            return true
-        } 
-        return false
+          // click select all checkbox only if there's something to select
+          if (!checkboxClasses?.includes('tbBtnActive') && itemsCount > 0){
+              await this.selectAllCheckbox.click()
+              return true
+          } 
+          return false
         })
       }
 
@@ -112,6 +111,7 @@ export class DocsPage extends BasePage {
     }
 
     async deleteSelected(needsConfirmation: boolean){
-      await this.listPageHelper.deleteSelected(needsConfirmation)
+      const listPageHelper = new ListPageHelper(this.page)
+      await listPageHelper.deleteSelected(needsConfirmation)
     }
 }

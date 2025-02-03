@@ -21,7 +21,6 @@ export class MailPage extends BasePage {
     private readonly unreadCountDiv: Locator
     protected readonly selectAllCheckbox: Locator
     private emailRow: Locator
-    private listPageHelper: ListPageHelper
     
 
     constructor(page: Page){
@@ -38,12 +37,12 @@ export class MailPage extends BasePage {
         this.unreadCountDiv = this.inboxMenu.locator('div div')
         this.selectAllCheckbox = this.page.locator('div[title="Select all"]')
         this.emailRow = this.page.locator('.listSubject')
-        this.listPageHelper = new ListPageHelper(this.page)
     }
 
     async selectAllItems(): Promise<boolean> {
         return await test.step(`Select all documents`, async () => {
-            await this.listPageHelper.waitForRefresh('getFolderMessages')
+            const listPageHelper = new ListPageHelper(this.page)
+            await listPageHelper.waitForRefresh('getFolderMessages')
 
             const checkboxClasses = await this.selectAllCheckbox.getAttribute('class')
             const itemsCount = await this.emailRow.count()
@@ -75,7 +74,7 @@ export class MailPage extends BasePage {
 
       async getUnreadCount(): Promise<number>{
         return await test.step(`Get unread emails count`, async () => {
-            expect(this.inboxMenu).toBeVisible()
+           await expect(this.inboxMenu).toBeVisible()
             const count = await this.unreadCountDiv.count()
             if(count > 0){
                 const count = await this.unreadCountDiv.textContent()
@@ -129,6 +128,7 @@ export class MailPage extends BasePage {
     }
 
     async deleteSelected(needsConfirmation: boolean){
-        await this.listPageHelper.deleteSelected(needsConfirmation)
+        const listPageHelper = new ListPageHelper(this.page)
+        await listPageHelper.deleteSelected(needsConfirmation)
       }
 }
