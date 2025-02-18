@@ -1,57 +1,88 @@
 import { expect, Locator, Page, test } from "@playwright/test"
-import { BaseListPage } from "../common/base-list-page"
+import { BasePage } from "../common/base-page"
+import { HeaderBar } from "../common/components/header-bar"
 import { NavPanel } from "../common/components/nav-panel"
+import { Toolbar } from "../common/components/toolbar"
+import { ListPageHelper } from "../common/helpers/listPageHelper"
 import { CreateMailForm } from "./components/create-mail-form"
 import { ViewMailPanel } from "./components/view-mail-panel"
 
 
-export class MailPage extends BaseListPage {
+export class MailPage extends BasePage {
     readonly navPanel: NavPanel
+    readonly header: HeaderBar
+    readonly toolbar: Toolbar
     readonly createMailForm: CreateMailForm
     readonly viewMailPanel: ViewMailPanel
     readonly createNewEmailButton: Locator
     readonly inboxMenu: Locator
+    readonly unreadEmailBySubject: (subject: string) => Locator
+    readonly emailBySubject: (subject: string) => Locator
+    private readonly unreadCountDiv: Locator
+    protected readonly selectAllCheckbox: Locator
+    private emailRow: Locator
+    
 
     constructor(page: Page){
         super(page)
         this.createNewEmailButton = this.page.locator('#mailNewBtn')
         this.inboxMenu = this.page.locator('#treeInbox')
         this.navPanel = new NavPanel(this.page, this.page.locator('.treePanel', {'hasText': '@mailfence.com'}))
+        this.header = new HeaderBar(this.page)
+        this.toolbar = new Toolbar(this.page)
         this.createMailForm = new CreateMailForm(this.page)
         this.viewMailPanel = new ViewMailPanel(this.page)
+        this.unreadEmailBySubject = (text: string) => this.page.locator('tr.listUnread', { hasText: text })
+        this.emailBySubject = (text: string) => this.page.locator('tr', { hasText: text })
+        this.unreadCountDiv = this.inboxMenu.locator('div div')
+        this.selectAllCheckbox = this.page.locator('div[title="Select all"]')
+        this.emailRow = this.page.locator('.listSubject')
     }
 
     async selectAllItems(): Promise<boolean> {
-        return this.baseSelectAllItems('getFolderMessages', '.listSubject')
+        return await test.step(`Select all documents`, async () => {
+            const listPageHelper = new ListPageHelper(this.page)
+            await listPageHelper.waitForRefresh('getFolderMessages')
+
+            const checkboxClasses = await this.selectAllCheckbox.getAttribute('class')
+            const itemsCount = await this.emailRow.count()
+
+            // click select all checkbox only if there's something to select
+            if (!checkboxClasses?.includes('tbBtnActive') && itemsCount > 0){
+                await this.selectAllCheckbox.click()
+                return true
+            } 
+            return false
+        })
       }
 
-      private async getEmailsBySubject(subject: string){
+
+    private async getEmailsBySubject(subject: string){
         await this.page.waitForSelector('.listSubject', { state: 'attached', timeout: 5000 })
-        return this.page.locator('tr', { hasText: subject })
+        return this.emailBySubject(subject)
     }
 
     async selectEmailsBySubject(subject: string){
             await test.step(`Select all emails by subject: ${subject}`, async () => {
-            let emails = await this.getEmailsBySubject(subject) 
-            const count = await emails.count()
-            for (let i = 0; i < count; i++) {
-                await emails.nth(i).locator('.checkIcon').click()
-            }
+                let emails = await this.getEmailsBySubject(subject)
+                const count = await emails.count()
+                for (let i = 0; i < count; i++) {
+                    await emails.nth(i).locator('.checkIcon').click()
+                }
         })
     }
 
-      // STEPS
       async getUnreadCount(): Promise<number>{
         return await test.step(`Get unread emails count`, async () => {
-            expect(this.inboxMenu).toBeVisible()
-            const count = await this.inboxMenu.locator('div div').count()
+           await expect(this.inboxMenu).toBeVisible()
+            const count = await this.unreadCountDiv.count()
             if(count > 0){
-                const count = await this.inboxMenu.locator('div div').textContent()
+                const count = await this.unreadCountDiv.textContent()
                 return Number(count)
             } else {
                 return 0
             }
-        }) 
+        })
     }
 
     async startNewEmail(){
@@ -79,8 +110,8 @@ export class MailPage extends BaseListPage {
             await test.step(`Wait for unread email with subject "${subject}"`, async () => {
                 await expect(async () => {
                     await this.toolbar.refresh()
-                    let mail = this.page.locator('tr.listUnread', { hasText: subject })
-                    await expect(mail).toBeAttached()
+                    let mail = this.unreadEmailBySubject(subject) 
+                    await expect(mail, `Email with subject "${subject}" was not found in the inbox`).toBeAttached() 
                 }).toPass()
             })
         }
@@ -88,12 +119,16 @@ export class MailPage extends BaseListPage {
 
     /**
      * Will select the latest email with a given subject
-     * @param subject Email subject 
+     * @param subject Email subject
      */
     async openUnreadEmailBySubject(subject: string){
         await test.step(`Get the latest unread email by subject: ${subject}`, async () => {
-            await this.page.locator('.listUnread', { hasText: subject}).first().click()
+            await this.unreadEmailBySubject(subject).first().click()
         })
     }
 
+    async deleteSelected(needsConfirmation: boolean){
+        const listPageHelper = new ListPageHelper(this.page)
+        await listPageHelper.deleteSelected(needsConfirmation)
+      }
 }

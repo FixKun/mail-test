@@ -1,21 +1,50 @@
-import { expect, Page, test } from "@playwright/test"
-import { BaseListPage } from "../common/base-list-page"
+import { expect, Locator, Page, test } from "@playwright/test"
+import { BasePage } from "../common/base-page"
+import { HeaderBar } from "../common/components/header-bar"
 import { NavPanel } from "../common/components/nav-panel"
+import { Toolbar } from "../common/components/toolbar"
+import { ListPageHelper } from "../common/helpers/listPageHelper"
 
-export class DocsPage extends BaseListPage {
+export class DocsPage extends BasePage {
     readonly navPanel: NavPanel
+    readonly header: HeaderBar
+    readonly toolbar: Toolbar
+    private readonly docRowByDocName: (name: string) => Locator
+    protected readonly selectAllCheckbox: Locator
+    private documentRow: Locator
+    protected readonly documentsByName: (name: string) => Locator = (text: string) => this.page.locator('tbody tr', {'hasText': text})
 
     constructor(page: Page){
         super(page)
+        this.header = new HeaderBar(this.page)
+        this.toolbar = new Toolbar(this.page)
         this.navPanel = new NavPanel(this.page, this.page.locator('.treePanel', {'hasText': 'My Documents'}))
+        this.docRowByDocName = (text: string) => this.page.locator('tr', { hasText: text })
+        this.selectAllCheckbox = this.page.locator('div[title="Select all"]')
+        this.documentRow = this.page.locator('.docType')
     }
 
-    async documentByNameExists(name:string){
-        await expect(this.documentsByName(name).first()).toBeVisible()
+    async isDocumentByNameExists(name:string){
+        await test.step(`Check that document with name "${name}" exists`, async () => {
+          await expect(this.documentsByName(name).first()).toBeVisible()
+        })
     }
     
     async selectAllItems(): Promise<boolean> {
-        return this.baseSelectAllItems('getDocuments', '.docType')
+        return await test.step(`Select all documents`, async () => {
+          const listPageHelper = new ListPageHelper(this.page)
+          await listPageHelper.waitForRefresh('getDocuments')
+
+          const checkboxClasses = await this.selectAllCheckbox.getAttribute('class')
+          const itemsCount = await this.documentRow.count()
+
+          // click select all checkbox only if there's something to select
+          if (!checkboxClasses?.includes('tbBtnActive') && itemsCount > 0){
+              await this.selectAllCheckbox.click()
+              return true
+          } 
+          return false
+        })
       }
 
       private async pageHasDocuments(timeout = 3000): Promise<boolean> {
@@ -24,7 +53,7 @@ export class DocsPage extends BaseListPage {
             .then(() => false as const), 
           this.page.waitForSelector('.name', { state: 'attached', timeout })
             .then(() => true as const), 
-        ]);
+        ])
       
         return result
       }
@@ -32,7 +61,7 @@ export class DocsPage extends BaseListPage {
       private async getDocumentsByName(name: string){
         const pageHasDocs = await this.pageHasDocuments()
         if (pageHasDocs){
-          return this.page.locator('tr', { hasText: name })
+          return this.docRowByDocName(name)
         } else {
           return this.page.locator('non-existent-selector')
         }
@@ -49,8 +78,6 @@ export class DocsPage extends BaseListPage {
       })
     }
 
-    // STEPS
-    
      /**
      * Drag'n'drops document (docName) to a folder (folderName) in nav panel
      * @param docName Document name to drag'n'drop
@@ -79,7 +106,12 @@ export class DocsPage extends BaseListPage {
     async verifyDocumentInFolder(fileName: string, folderName: string){
       await test.step(`Validate that ${fileName} document is in ${folderName} folder`, async () => {
           await this.navPanel.openFolderByName(folderName)
-          await this.documentByNameExists(fileName)
+          await this.isDocumentByNameExists(fileName)
       })
+    }
+
+    async deleteSelected(needsConfirmation: boolean){
+      const listPageHelper = new ListPageHelper(this.page)
+      await listPageHelper.deleteSelected(needsConfirmation)
     }
 }

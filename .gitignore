@@ -4,6 +4,7 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 .auth/
+.vscode/
 data/*.txt
 *.env
 *.js

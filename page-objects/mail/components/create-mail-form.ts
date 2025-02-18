@@ -6,6 +6,7 @@ export class CreateMailForm {
     readonly mailSubjectField: Locator
     readonly attachmentMenu: Locator
     readonly sendEmailButton: Locator
+    readonly fileInput: Locator
 
     constructor(page: Page){
         this.page = page
@@ -13,15 +14,19 @@ export class CreateMailForm {
         this.mailSubjectField = this.page.getByRole('row', {name: 'Subject', exact: true}).getByRole('textbox')
         this.attachmentMenu = this.page.getByText('Attachment')
         this.sendEmailButton = this.page.locator('#mailSend')
+        this.fileInput = this.page.locator('input[type=file]')
     }
 
-
     async setMailRecipient(recipient: string){
-        await this.mailToField.fill(recipient)
+        await test.step(`Set email recipient to ${recipient}`, async () => {
+            await this.mailToField.fill(recipient)
+        })
     }
 
     async setMailSubject(subject: string){
-        await this.mailSubjectField.fill(subject)
+        await test.step(`Set email subject to ${subject}`, async () => {
+            await this.mailSubjectField.fill(subject)
+        })
     }
 
     /**
@@ -29,22 +34,25 @@ export class CreateMailForm {
      * @param filePath A path to a file to attach
      */
     async attachFile(filePath: string){
-        await this.attachmentMenu.click()
-        const responsePromise = this.page.waitForResponse('/sw?type=gwtmail*')
-        await this.page.locator('input[type=file]').setInputFiles(filePath)
-        await responsePromise
+        await test.step(`Attach file ${filePath} to email`, async () => {
+            await this.attachmentMenu.click()
+            const responsePromise = this.page.waitForResponse('/sw?type=gwtmail*')
+            await this.fileInput.setInputFiles(filePath) 
+            await responsePromise
+        })
     }
 
     async sendEmail(){
-        await this.sendEmailButton.click()
+        await test.step(`Send email`, async () => {
+            await this.sendEmailButton.click()
+        })
     }
 
-    // STEPS
-    async composeAndSendEmail(recipient: string, subject: string, filePath: string = ''){
+    async composeAndSendEmail(recipient: string, subject: string, filePath?: string){
         await test.step(`Create and send email with subject: ${subject} to ${recipient}`, async () => {
             await this.setMailRecipient(recipient)
             await this.setMailSubject(subject)
-            if (filePath != ''){
+            if (filePath){ 
                 await this.attachFile(filePath)
             }
             await this.sendEmail()

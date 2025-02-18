@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test"
+import { Locator, Page, test } from "@playwright/test"
 
 export class ContextMenu {
     protected readonly page: Page
@@ -10,7 +10,8 @@ export class ContextMenu {
     }
 
     async clickMenuItemByName(menuItemName: string){
-        await this.menuItemByName(menuItemName).click()
+        await test.step(`Click "${menuItemName}" menu item in context menu`, async () => {
+            await this.menuItemByName(menuItemName).click()
+        })
     }
-
 }
