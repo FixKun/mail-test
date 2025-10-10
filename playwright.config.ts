@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, 'credentials.env') })
+dotenv.config({ path: path.resolve(__dirname, 'credentials.env') });
 
 export default defineConfig({
   testDir: './tests',
@@ -14,9 +14,9 @@ export default defineConfig({
   use: {
     baseURL: 'https://mailfence.com/',
     trace: 'on-first-retry',
-    extraHTTPHeaders:{
-      'Accept-Language': 'en-US,en;q=0.5'
-    }
+    extraHTTPHeaders: {
+      'Accept-Language': 'en-US,en;q=0.5',
+    },
   },
 
   projects: [
@@ -27,15 +27,15 @@ export default defineConfig({
     },
 
     {
-      name: 'setup', 
+      name: 'setup',
       testMatch: 'auth.setup.ts',
-      use:{
+      use: {
         ...devices['Desktop Chrome'],
         headless: true,
         launchOptions: {
-          args: ["--headless"]
-      }
-      }
+          args: ['--headless'],
+        },
+      },
     },
   ],
 });
